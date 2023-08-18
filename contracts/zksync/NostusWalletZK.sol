@@ -20,8 +20,9 @@ import "@matterlabs/zksync-contracts/l2/system-contracts/Constants.sol";
 
 import "@openzeppelin/contracts/interfaces/IERC1271.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
-contract NotusWalletZK is IAccount, IERC1271 {
+contract NotusWalletZK is IAccount, IERC1271, ReentrancyGuard {
     using TransactionHelper for Transaction;
 
     bytes4 constant EIP1271_SUCCESS_RETURN_VALUE = 0x1626ba7e;
@@ -125,12 +126,12 @@ contract NotusWalletZK is IAccount, IERC1271 {
 
     function executeBatchTransaction(
         bytes[] calldata datas,
-        address caller
-    ) public payable {
+        address[] calldata callers
+    ) public payable nonReentrant {
         require(msg.sender == address(this));
         uint256 length = datas.length;
         for (uint256 i = 0; i < length; i++) {
-            (bool success, ) = caller.call{value: msg.value}(datas[i]);
+            (bool success, ) = callers[i].call(datas[i]);
             require(success, "Transaction fail");
         }
     }
