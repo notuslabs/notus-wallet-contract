@@ -115,12 +115,20 @@ contract NotusPaymasterZK is IPaymaster, Ownable {
         require(success, "Failed withdraw funds");
     }
 
+    function withdrawToken(uint256 amount) external payable onlyOwner {
+        allowedToken.transfer(owner(), amount);
+    }
+
     function getFee() external view returns (address token, uint256 priceFee) {
         return (address(allowedToken), _priceForPayingFees);
     }
 
     function updateFee(uint256 newPriceFee) external onlyOwner {
         _priceForPayingFees = newPriceFee;
+    }
+
+    function updateAllowedFactory(address newAllowedFactory) external onlyOwner {
+        allowedFactory = newAllowedFactory;
     }
 
     function _payBootloader(uint256 requiredETH) private {
