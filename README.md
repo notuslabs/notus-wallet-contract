@@ -32,6 +32,8 @@ The zkSync Era network, known for its scalability and low fees, provides the ide
 2. Navigate to the directory: `cd notus-wallet-contract`
 3. Install dependencies: `yarn`
 4. Compile contracts: `npx hardhat compile`
+5. Run test node: `era_test_node fork mainnet`
+6. Run test of all contracts: `yarn test`
 
 ## Smart Contracts
 
