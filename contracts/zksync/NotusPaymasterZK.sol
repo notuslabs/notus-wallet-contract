@@ -42,7 +42,7 @@ contract NotusPaymasterZK is IPaymaster, Ownable {
     constructor(IERC20 _allowedToken, address _allowedFactory) {
         allowedToken = _allowedToken;
         allowedFactory = _allowedFactory;
-        _priceForPayingFees = 1e18;
+        _priceForPayingFees = 1e6;
     }
 
     function validateAndPayForPaymasterTransaction(

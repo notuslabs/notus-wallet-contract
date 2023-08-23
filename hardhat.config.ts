@@ -1,8 +1,9 @@
 import { HardhatUserConfig } from "hardhat/config";
 import "@matterlabs/hardhat-zksync-deploy";
 import "@matterlabs/hardhat-zksync-solc";
-
 import "@matterlabs/hardhat-zksync-verify";
+
+import "dotenv/config";
 
 const zkSyncTestnet =
   process.env.NODE_ENV == "test"
@@ -23,7 +24,7 @@ const config: HardhatUserConfig = {
   zksolc: {
     version: "latest",
     settings: {
-      isSystem: true
+      isSystem: true,
     },
   },
   defaultNetwork: "zkSyncTestnet",
@@ -32,13 +33,20 @@ const config: HardhatUserConfig = {
       zksync: true,
     },
     zkSyncTestnet,
+    zkSync: {
+      url: "https://mainnet.era.zksync.io",
+      ethNetwork: "https://rpc.ankr.com/eth",
+      zksync: true,
+      verifyURL:
+        "https://zksync2-mainnet-explorer.zksync.io/contract_verification",
+    },
   },
   solidity: {
     version: "0.8.17",
   },
   mocha: {
-    timeout: 100000000
-  }
+    timeout: 100000000,
+  },
 };
 
 export default config;
