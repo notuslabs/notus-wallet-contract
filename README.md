@@ -46,6 +46,7 @@ The zkSync Era network, known for its scalability and low fees, provides the ide
 | USDC (Mainnet)   | [`0x3355df6d4c9c3035724fd0e3914de96a5a83aaf4`](https://explorer.zksync.io/address/0x3355df6d4c9c3035724fd0e3914de96a5a83aaf4)          |
 
 Example of a NotusWalletZK deployed (Mainnet) [`0x5655A5339E18589Fdc50dE3cB8d402Cc08bc3a2F`](https://explorer.zksync.io/address/0x5655A5339E18589Fdc50dE3cB8d402Cc08bc3a2F#contract)
+
 Example of a tx with NotusWalletZK (Mainnet) [0x1c100755c1550469068042f6d99e4f47e78c2816e0b624ee11628329745d9154](https://explorer.zksync.io/tx/0x1c100755c1550469068042f6d99e4f47e78c2816e0b624ee11628329745d9154)
 
 
