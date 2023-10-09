@@ -23,6 +23,7 @@ interface INotusVaultTypes {
     struct Vault {
         string vaultId;
         uint256 balance;
+        uint256 value;
         address vault;
     }
 }

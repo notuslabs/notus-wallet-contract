@@ -15,6 +15,6 @@
 pragma solidity ^0.8.17;
 
 interface INotusVaultDB {
-    function depositVault(address user, uint256 amount, string calldata vaultId) external;
-    function withdrawVault(address user, uint256 amount, string calldata vaultId) external;
+    function depositVault(address user, uint256 amount, uint256 value, address vault, string calldata vaultId) external;
+    function withdrawVault(address user, uint256 amount, uint256 value, string calldata vaultId) external;
 }

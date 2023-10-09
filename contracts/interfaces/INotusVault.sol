@@ -25,16 +25,11 @@ interface INotusVault {
     function depositExactAmountIn(
         address tokenIn,
         uint256 amountIn,
-        address recipient,
-        address dbContract,
-        string calldata vaultId
+        address recipient
     ) external returns (INotusVaultTypes.VaultToken[] memory, uint256);
 
     function withdraw(
         uint256 amountIn,
-        address sender,
-        address recipient,
-        address dbContract,
-        string calldata vaultId
+        address recipient
     ) external returns (INotusVaultTypes.VaultToken[] memory);
 }

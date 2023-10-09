@@ -72,45 +72,56 @@ contract NotusVaultDB is INotusVaultDB, INotusVaultTypes, Ownable {
     function depositVault(
         address user,
         uint256 amount,
+        uint256 value,
+        address vault,
         string calldata vaultId
     ) external override onlyWriter {
         uint256 index = _userVault[user][vaultId];
         if (index == 0) {
-            createVault(user, amount, vaultId);
+            createVault(user, amount, value, vault, vaultId);
             return;
         } else {
             Vault storage userVault = _userVaults[user][index - 1];
             userVault.balance += amount;
+            userVault.value += value;
         }
     }
 
     function withdrawVault(
         address user,
         uint256 amount,
+        uint256 value,
         string calldata vaultId
     ) external override onlyWriter {
         uint256 index = _userVault[user][vaultId];
         Vault storage userVault = _userVaults[user][index - 1];
         userVault.balance -= amount;
+        if (userVault.balance == 0 || value > userVault.value) {
+            userVault.value = 0;
+        } else {
+            userVault.value -= value;
+        }
     }
 
     function createVault(
         address user,
         uint256 amount,
+        uint256 value,
+        address _vault,
         string calldata vaultId
     ) internal {
         uint256 index = _userVaults[user].length;
-        Vault memory vault = Vault(vaultId, amount, msg.sender);
+        Vault memory vault = Vault(vaultId, amount, value, _vault);
         _userVaults[user].push(vault);
         _userVault[user][vaultId] = index + 1;
-        setVaultTokens(msg.sender);
+        setVaultTokens(_vault);
     }
 
     function setVaultTokens(address vault) internal {
-        if (_vaultTokens[msg.sender].length > 0) return;
+        if (_vaultTokens[vault].length > 0) return;
         VaultToken[] memory vaultTokens = INotusVault(vault).getInfo();
         for (uint i = 0; i < vaultTokens.length; i++) {
-            _vaultTokens[msg.sender].push(vaultTokens[i]);
+            _vaultTokens[vault].push(vaultTokens[i]);
         }
     }
 }

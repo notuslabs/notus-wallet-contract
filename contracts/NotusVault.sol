@@ -19,7 +19,6 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 import "./interfaces/INotusVault.sol";
-import "./interfaces/INotusVaultDB.sol";
 
 contract NotusVault is INotusVault, INotusVaultTypes, ERC20, Ownable {
     using SafeERC20 for IERC20;
@@ -92,9 +91,7 @@ contract NotusVault is INotusVault, INotusVaultTypes, ERC20, Ownable {
 
     function depositExactAmountOut(
         uint256 amountOut,
-        address recipient,
-        address dbContract,
-        string calldata vaultId
+        address recipient
     ) external onlyNotusSwap returns (VaultToken[] memory) {
         require(amountOut > 0, "Amount must be greater than 0");
 
@@ -112,17 +109,13 @@ contract NotusVault is INotusVault, INotusVaultTypes, ERC20, Ownable {
 
         _mint(recipient, amountOut);
 
-        INotusVaultDB(dbContract).depositVault(recipient, amountOut, vaultId);
-
         return tokensIn;
     }
 
     function depositExactAmountIn(
         address tokenIn,
         uint256 amountIn,
-        address recipient,
-        address dbContract,
-        string calldata vaultId
+        address recipient
     ) external override onlyNotusSwap returns (VaultToken[] memory, uint256) {
         uint256 amountOut = (amountIn * ONE) / _safeVirtualAmount(tokenIn);
         require(amountOut > 0, "Invalid amount IN");
@@ -144,21 +137,14 @@ contract NotusVault is INotusVault, INotusVaultTypes, ERC20, Ownable {
 
         _mint(recipient, amountOut);
 
-        INotusVaultDB(dbContract).depositVault(recipient, amountOut, vaultId);
-
         return (tokensIn, amountOut);
     }
 
     function withdraw(
         uint256 amountIn,
-        address user,
-        address recipient,
-        address dbContract,
-        string calldata vaultId
+        address recipient
     ) external override onlyNotusSwap returns (VaultToken[] memory) {
         _burn(msg.sender, amountIn);
-
-        INotusVaultDB(dbContract).withdrawVault(user, amountIn, vaultId);
 
         uint256 _length = _info.length;
         VaultToken[] memory tokensOut = new VaultToken[](_length);

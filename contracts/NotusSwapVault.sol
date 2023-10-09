@@ -19,6 +19,7 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 import "./interfaces/INotusVault.sol";
+import "./interfaces/INotusVaultDB.sol";
 import "./interfaces/INotusVaultTypes.sol";
 
 contract NotusSwapVault is INotusVaultTypes, Ownable {
@@ -97,6 +98,7 @@ contract NotusSwapVault is INotusVaultTypes, Ownable {
         for (uint i = 0; i < length; i++) {
             VaultToken memory tokenVault = tokensVault[i];
             uint256 amount = IERC20(tokenVault.token).balanceOf(address(this));
+            // 45623874741823682 - (45623874741823682 % 17) = 45623874741823682
             uint256 virtualAmount = _calcAmountOut(
                 amount,
                 tokenVault.virtualAmount
@@ -115,9 +117,7 @@ contract NotusSwapVault is INotusVaultTypes, Ownable {
             .depositExactAmountIn(
                 tokenInVault,
                 amountInvault,
-                msg.sender,
-                _dbContract,
-                params.vaultId
+                msg.sender
             );
 
         require(
@@ -125,7 +125,10 @@ contract NotusSwapVault is INotusVaultTypes, Ownable {
             "Amount out is less than the min"
         );
 
+        INotusVaultDB(_dbContract).depositVault(msg.sender, amountOut, params.amountIn, params.vault, params.vaultId);
+
         _withdrawFee(tokensVault);
+
         params.tokenIn.safeTransfer(
             _notus,
             params.tokenIn.balanceOf(address(this))
@@ -146,10 +149,7 @@ contract NotusSwapVault is INotusVaultTypes, Ownable {
 
         tokensOutVault = INotusVault(vault).withdraw(
             amountIn,
-            msg.sender,
-            address(this),
-            _dbContract,
-            vaultId
+            address(this)
         );
 
         uint256 length = tokensVault.length;
@@ -162,6 +162,8 @@ contract NotusSwapVault is INotusVaultTypes, Ownable {
 
         amountOut = tokenOut.balanceOf(address(this));
         require(amountOut >= minAmountOut);
+
+        INotusVaultDB(_dbContract).withdrawVault(msg.sender, amountIn, amountOut, vaultId);
 
         tokenOut.safeTransfer(msg.sender, amountOut);
 
@@ -207,5 +209,6 @@ contract NotusSwapVault is INotusVaultTypes, Ownable {
         uint256 virtualBalance
     ) internal pure returns (uint256) {
         return (amount * 1e18) / virtualBalance;
+        // 45623874741823682 - (45623874741823682 % 17) / 17 = 2683757337754334
     }
 }
